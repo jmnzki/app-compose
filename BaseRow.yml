@@ -1,0 +1,47 @@
+version: '3.3'
+services:
+  baserow:
+    container_name: baserow
+    environment:
+            - 'BASEROW_PUBLIC_URL=http://192.168.0.103:3001'
+            - DATABASE_HOST=postgres_db
+            - DATABASE_NAME=root_db
+            - DATABASE_USER=postgres
+            - DATABASE_PASSWORD=password
+            - DATABASE_PORT=5432
+    volumes:
+            - 'baserow_data:/baserow/data'
+    ports:
+            - '3001:80'
+    restart: unless-stopped
+    image: 'baserow/baserow:1.13.3'
+    networks:
+      - baserow_default
+  postgres_db: 
+    environment: 
+      POSTGRES_DB: root_db
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+    healthcheck: 
+      interval: 10s
+      retries: 10
+      test: "pg_isready -U \"postgres\" -d \"root_db\""
+      timeout: 2s
+    image: postgres
+    restart: always
+    ports: 
+      - "5432:5432"
+    volumes: 
+      - "db_data:/var/lib/postgresql/data"
+    networks:
+      - baserow_default
+volumes:
+   baserow_data: {}
+   db_data: {}
+networks:
+  baserow_default:
+#    driver: bridge
+#networks:
+#    baserow_default:
+#      external: true
+

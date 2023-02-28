@@ -1,0 +1,24 @@
+version: '3.3'
+services:
+  baserow:
+    container_name: baserow
+    environment:
+            - 'BASEROW_PUBLIC_URL=http://172.26.88.250:3001'
+            - DATABASE_HOST=root_db
+            - DATABASE_NAME=baserow
+            - DATABASE_USER=postgres
+            - DATABASE_PASSWORD=password
+            - DATABASE_PORT=5432
+    volumes:
+            - 'baserow_data:/baserow/data'
+    ports:
+            - '3001:80'
+    restart: unless-stopped
+    image: 'baserow/baserow:1.13.3'
+    networks:
+      - nocodb_default
+volumes:
+   baserow_data: {}
+networks:
+    nocodb_default:
+      external: true
